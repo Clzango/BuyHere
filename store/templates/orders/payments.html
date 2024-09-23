@@ -1,5 +1,3 @@
-
-
 {% extends "layout.html" %}
 {% load static %}
 
@@ -11,80 +9,56 @@
     
     <!-- ============================ COMPONENT 1 ================================= -->
 
+ 
     <div class="row">
-        <aside class="col-lg-6">
+        <aside class="col-lg-8">
     <div class="card">
-       <div class="card-body">
-        <h4 class="card-title mb-4">Billing Adress</h4>
-
-        <form action="{% url 'place_order' %}" method='POST'>
-            {% csrf_token %}
-            <div class="form-row">
-                <div class="col form-group">
-                    <label for="">First Name</label>
-                    <input type="text" name="first_name" class='form-control' required>
-                </div>
-
-                <div class="col form-group">
-                    <label for="">Last Name</label>
-                    <input type="text" name="last_name" class='form-control' required>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="col form-group">
-                    <label for="">email</label>
-                    <input type="email" name="email" class='form-control' required>
-                </div>
-
-                <div class="col form-group">
-                    <label for="">Phone Number</label>
-                    <input type="text" name="phone" class='form-control' required>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="col form-group">
-                    <label for="">Adress Line 1</label>
-                    <input type="text" name="adress_line_1" class='form-control' required>
-                </div>
-
-                <div class="col form-group">
-                    <label for="">Adress Line 2</label>
-                    <input type="text" name="Adress_line 2" class='form-control'>
-                </div>
-            </div>
+    
+        <div class="card">
+            <h5 class="card-header">Billing Address</h5>
+            <div class="card-body">
               
-            <div class="form-row">
-                <div class="col form-group">
-                    <label for="city">City</label>
-                    <input type="text" name="city" class='form-control' required>
-                </div>
+              <p class="card-text">{{order.first_name}} {{order.last_name}}</p>
+              <p class="card-text">{{order.address_line_1}} , {{order.address_line_2}} </p>
+              <p class="card-text">{{order.city}}, {{order.city}}</p>
+              <p class="card-text">{{order.country}}</p>
+              <p class="card-text">{{order.email}}</p>
+              <p class="card-text">{{order.phone}}</p>
+             {%if order.order_note %}
+             <p class="card-text">{{order.note}}</p>
+             {% endif %}
 
-                <div class="col form-group">
-                    <label for="">State</label>
-                    <input type="text" name="state" class='form-control' required>
-                </div>
-
-                <div class="col form-group">
-                    <label for="">Country</label>
-                    <input type="text" name="country" class='form-control' required>
-                </div>
             </div>
-
-                <div class="form-row">
-                    <label for="">Order Note</label>
-                    <textarea name="order_note"row="2" class='form-control'></textarea>
-                </div>
+          </div>
           
-        
-       </div>
-    </div> <!-- card.// -->
+
+
+    </div>
     
-        </aside> <!-- col.// -->
-        <aside class="col-lg-6">
     
-            <div class="card">
+    <!-- card.// -->
+
+    <div class="card">
+    
+        <div class="card">
+            <h5 class="card-header">Payment Method</h5>
+            <div class="card-body">
+              
+              <p class="card-text">PayPal</p>
+            
+            </div>
+          </div>
+          
+
+
+    </div>
+
+    <div class="card">
+    
+        <div class="card">
+            <h5 class="card-header">Reviw Products</h5>
+            <div class="card-body">
+              
                 <table class="table table-borderless table-shopping-cart">
                     <thead class="text-muted">
                     <tr class="small text-uppercase">
@@ -131,23 +105,47 @@
                    
                     </tbody>
                     </table>
-            <div class="card-body">
-               
-               
-                <button type="submit" name="submit" class="btn btn-primary btn-block">Place Order</button>
-                <a href="{% url 'store' %}" class="btn btn-light btn-block">Continue Shopping</a>
+            
+            </div>
+          </div>
+          
 
-            </form>
+
+    </div>
+    
+        </aside> <!-- col.// -->
+        <aside class="col-lg-4">
+    
+            <div class="card">
+            <div class="card-body">
+                <dl class="dlist-align">
+                  <dt>Total price:</dt>
+                  <dd class="text-right">${{total}}</dd>
+                </dl>
+                <dl class="dlist-align">
+                  <dt>Tax:</dt>
+                  <dd class="text-right">${{tax}}</dd>
+                </dl>
+                <dl class="dlist-align">
+                  <dt>Total:</dt>
+                  <dd class="text-right text-dark b"><strong>${{grand_total}}</strong></dd>
+                </dl>
+                <hr>
+                <p class="text-center mb-3">
+                    <img src={% static "./images/misc/payments.png"%} height="26">
+                </p>
+                <a href="{%url 'checkout'%}" class="btn btn-primary btn-block"> Make payment </a>
+                
             </div> <!-- card-body.// -->
             </div> <!-- card.// -->
-        
+    
     </aside> <!-- col.// -->
     
     
     </div> <!-- row.// -->
     <!-- ============================ COMPONENT 1 END .// ================================= -->
 
-    
+
     
     </div> <!-- container .//  -->
     </section>
