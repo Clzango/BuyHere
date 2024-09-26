@@ -2,13 +2,73 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from carts.models import CartItem
 from .forms import OrderForm
-from .models import Order
+from .models import Order, Payment, OrderProduct
 import datetime
+import json
+from  store.models import Product
 
 
 # Create your views here.
 
 def payments(request):
+    body = json.loads(request.body)
+    order= Order.objects.get(user=request.user,is_ordered=False, order_number=body['orderID'])
+   
+    #store transations details inside the payment model
+    payment = Payment(
+    user = request.user,
+    payment_id = body['transID'],
+    payment_method = body['payment_method'],
+    amount_paid =  order.order_total,
+    status = body['status'], 
+
+    )
+    
+    payment.save()
+
+    # Move the cart items to Order Product table
+    cart= CartItem.objects.filter(user=request.user)
+    for item in CartItem:
+        orderproduct = OrderProduct()
+        orderproduct.order_id = order.id 
+        orderproduct.payment = payment
+        orderproduct.user_id = request.user.idf
+        orderproduct.product_id = item.product_id
+        orderproduct.quantity = item.quantity
+        orderproduct.product_price = item.product_price
+        orderproduct.ordered = True
+        orderproduct.save()
+
+        cart_item = CartItem.objects.get(id=item.id)
+        product_variation = cart_item.variations.all()
+        orderproduct = OrderProduct.objects.get(i=orderproduct.id)
+        orderproduct.variations.set(product_variation)
+        orderproduct.save()
+
+       
+
+
+
+    # Reduce the quantity of the sold products
+
+        product = Product.objects.get(id=item.product_id)
+        product.stock -=item.quantity
+        product.save()
+
+
+    # Clear  cart
+    CartItem.objects.filter(user=request.user).delete
+
+    # Send order received email to customer
+
+
+    # Send order number and transation id back to sendData method cia JsonResponse
+
+
+    order.payment = payment
+    order.is_ordered = True
+    order.save()
+
 
     return render(request,"orders/payments.html")
 
@@ -37,6 +97,7 @@ def place_order(request, total= 0, quantity =0,):
         if form.is_valid():
             #store all the billing information inside order table
             data = Order()
+            data.user = current_user
             data.first_name = form.cleaned_data['first_name']
             data.last_name = form.cleaned_data['last_name']
             data.phone = form.cleaned_data['phone']
@@ -57,7 +118,7 @@ def place_order(request, total= 0, quantity =0,):
             dt = int(datetime.date.today().strftime('%d'))
             mt = int(datetime.date.today().strftime('%m'))
             d = datetime.date(yr,mt,dt)
-            current_date = d.strtime("%Y%m%d")
+            current_date = d.strftime("%Y%m%d")
 
             order_number = current_date + str(data.id)
             data.order_number = order_number
