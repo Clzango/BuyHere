@@ -15,12 +15,11 @@
     <div class="card">
     
         <div class="card">
-            <h5 class="card-header">Billing Address</h5>
+            <h5 class="card-header text-primary">Billing Address</h5>
             <div class="card-body">
-              
-              <p class="card-text">{{order.first_name}} {{order.last_name}}</p>
-              <p class="card-text">{{order.address_line_1}} , {{order.address_line_2}} </p>
-              <p class="card-text">{{order.city}}, {{order.city}}</p>
+              <p class="card-text">{{order.full_name}}</p>
+              <p class="card-text">{{order.full_address}} </p>
+              <p class="card-text">{{order.city}}</p>
               <p class="card-text">{{order.country}}</p>
               <p class="card-text">{{order.email}}</p>
               <p class="card-text">{{order.phone}}</p>
@@ -41,10 +40,10 @@
     <div class="card">
     
         <div class="card">
-            <h5 class="card-header">Payment Method</h5>
+            <h5 class="card-header text-primary">Payment Method</h5>
             <div class="card-body">
               
-              <p class="card-text">PayPal</p>
+              <p class="card-text text-primary">PayPal</p>
             
             </div>
           </div>
@@ -172,17 +171,18 @@
         }
         
 
-        var amount = '{{grand_total}}'
-        var url = '{% url 'payments' %}'
-        var csrf_token = getCookie('csrf_token');
-        var orderID = '{{order.order_number}}'
-        var payment_method = 'paypal'
+        var amount = "{{grand_total}}"
+        var url = "{% url 'payments' %}"
+        var csrftoken = getCookie('csrftoken');
+        var orderID = "{{order.order_number}}"
+        var payment_method = 'Paypal'
+        var redirect_url ="{% url 'order_complete' %}"
 
         //render the paypal_button into paypal_button-container
         var csrftoken = getCookie('csrftoken');
         paypal.Buttons({
             style: {
-                color: 'gold',
+                color: 'blue',
                 shape: 'rect',
                 layout: 'vertical',
                 label: 'pay'
@@ -190,7 +190,7 @@
 
             //set up the transation
 
-            createOrder : function(data,actions){
+            createOrder: function(data,actions){
                 return actions.order.create(
                     {
                         purchase_units:[{
@@ -211,20 +211,22 @@
                     sendData();
                     function sendData(){
                         fetch(url,{
-                            method : "POST",
+                            method:"POST",
                             headers: {
                                 'Content-type': 'application/json',
                                 'X-CSRFToken': csrftoken,
                             },
                             body: JSON.stringify({
-                                orderID ,
+                                orderID: orderID,
                                 transID: details.id,
                                 payment_method: payment_method,
-                                status : details.status,
+                                status: details.status,
                             }),
                         })
-                      //  .then(reponse => reponse.json())
-                       // .then(data => console.log(data));
+                        .then((reponse )=> reponse.json())
+                        .then((data )=>{
+                            window.location.href = redirect_url + '?order_number'+data.order_number+'&payment_id='+data.transID;
+                        } );
                     }
                 });
             }
