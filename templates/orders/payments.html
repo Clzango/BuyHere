@@ -225,7 +225,7 @@
                         })
                         .then((reponse )=> reponse.json())
                         .then((data )=>{
-                            window.location.href = redirect_url + '?order_number'+data.order_number+'&payment_id='+data.transID;
+                            window.location.href = redirect_url + '?order_number='+data.order_number+'&payment_id='+data.transID;
                         } );
                     }
                 });
