@@ -1366,6 +1366,7 @@ a[class*=card]:hover .title {
 .gallery-wrap .thumbs-wrap {
   text-align: center;
   margin-bottom: 20px;
+
 }
 .gallery-wrap .thumbs-wrap .item-thumb {
   width: 60px;

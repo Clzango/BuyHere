@@ -44,7 +44,7 @@ Hide radio bottom
 
 
 /* Click and Houver */
-input:checked ~,label:hover ~ label{
+input:checked ~ label, label:hover ~ label{
     color: #ffb503;
 
 
@@ -53,7 +53,13 @@ input:checked ~,label:hover ~ label{
 
 /* Hover hightlight */
 
-input:checked +label:hover, input:checked ~ label:hover, input:checked ~ label:hover,
-label:hover ~ input:checked~ label{
+input:checked + label:hover, input:checked ~ label:hover, input:checked ~ label:hover ~ label,
+label:hover ~ input:checked ~ label{
     color: #cc9000;
+}
+
+.rating-star i{
+
+    color: #ffb503 !important;
+
 }
